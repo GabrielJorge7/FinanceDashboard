@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Categories from './pages/Categories';
 import Transactions from './pages/Transactions';
+import Register from './pages/Register';
 
 function PrivateRoute({ children }: { children: React.ReactElement }) {
   const token = localStorage.getItem('token');
@@ -24,6 +25,7 @@ function Layout({ children }: { children: React.ReactNode }) {
           <Link style={linkStyle} to="/">Dashboard</Link>
           <Link style={linkStyle} to="/categories">Categorias</Link>
           <Link style={linkStyle} to="/transactions">Lançamentos</Link>
+          <Link style={linkStyle} to="/register">Cadastrar</Link>
           <button onClick={logout} style={{ marginTop: 16, background: '#dc2626', color: '#fff', padding: '8px 12px', border: 'none', borderRadius: 4, cursor: 'pointer' }}>Sair</button>
         </nav>
       </aside>
@@ -41,6 +43,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/" element={<PrivateRoute><Layout><Dashboard /></Layout></PrivateRoute>} />
         <Route path="/categories" element={<PrivateRoute><Layout><Categories /></Layout></PrivateRoute>} />
         <Route path="/transactions" element={<PrivateRoute><Layout><Transactions /></Layout></PrivateRoute>} />

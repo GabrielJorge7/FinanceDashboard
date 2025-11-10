@@ -31,14 +31,13 @@ public class AuthController : ControllerBase
         {
             UserName = registerDto.Email,
             Email = registerDto.Email,
-            FirstName = registerDto.FirstName,
-            LastName = registerDto.LastName,
+            FirstName = string.Empty,
+            LastName = string.Empty,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
-        
+
         var result = await _userManager.CreateAsync(user, registerDto.Password);
-        
         if (!result.Succeeded)
         {
             foreach (var error in result.Errors)
@@ -47,9 +46,8 @@ public class AuthController : ControllerBase
             }
             return BadRequest(ModelState);
         }
-        
+
         var token = _tokenService.CreateToken(user);
-        
         return Ok(new AuthResponseDto
         {
             Token = token,
@@ -57,7 +55,7 @@ public class AuthController : ControllerBase
             User = new UserDto
             {
                 Id = user.Id,
-                Email = user.Email,
+                Email = user.Email!,
                 FirstName = user.FirstName,
                 LastName = user.LastName
             }
