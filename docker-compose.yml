@@ -1,0 +1,45 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: finance_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: financedb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - finance-net
+  api:
+    build: ./src/Finance.Api
+    container_name: finance_api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=financedb;Username=postgres;Password=postgres
+      Jwt__Issuer: Finance.Api
+      Jwt__Audience: Finance.Web
+      Jwt__Secret: CHANGE_ME_TO_A_LONG_RANDOM_SECRET_KEY_!@#1234567890abcd
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    networks:
+      - finance-net
+  web:
+    build: ./finance-web
+    container_name: finance_web
+    depends_on:
+      - api
+    ports:
+      - "5173:80"
+    networks:
+      - finance-net
+
+networks:
+  finance-net:
+    driver: bridge
+
+volumes:
+  pgdata:
